@@ -1,0 +1,43 @@
+<h1>Chat Exercicio 5 - Node JS!</h1>
+
+<form id="comment-form">
+    Author:<br>
+    <input type="text" name="autor" id="autor"><br>
+    Mensagem:<br>
+    <input type="text" name="mensagem" id="mensagem"><br>
+    <br>
+    <button type="submit">Enviar mensagem!</button>
+</form>
+
+<ol id="messages"></ol>
+
+<script src="/socket.io/socket.io.js"></script>
+<script type="text/javascript">
+    const socket = io('http://localhost:3000');
+
+const messageForm= document.getElementById('comment-form')
+
+messageForm.onsubmit = function(event) {
+    event.preventDefault()
+
+    const autor = document.getElementById('autor').value
+    const mensagem = document.getElementById('mensagem').value
+    const data = {autor,mensagem}
+    renderMessage(data)
+    socket.emit('sendMessage', data)
+}
+
+socket.on('mensagem', (mensagem)  => {
+    renderMessage(mensagem)
+})
+
+const messageList = document.getElementById('messages')
+
+const renderMessage = (message) => {
+    const element = document.createElement('li')
+    element.innerHTML = `<strong>${message.autor}</strong>: ${message.mensagem}`
+    messageList.append(element)
+}
+
+</script>
+
